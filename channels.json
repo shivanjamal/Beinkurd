@@ -1,0 +1,20 @@
+ [
+    {
+        "id": "bein1",
+        "name": "بیین سپۆرت 1",
+        "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-1/",
+        "event": "یاریئت تەپاپئ"
+    },
+    {
+        "id": "bein2",
+        "name": "بیین سپۆرت 2",
+        "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-2/",
+        "event": "یاریئت تەپاپئ"
+    },
+    {
+        "id": "bein3",
+        "name": "بیین سپۆرت 3",
+        "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-3/",
+        "event": ""
+    }
+]
