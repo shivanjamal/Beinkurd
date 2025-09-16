@@ -44,10 +44,11 @@ body {
     min-height: 100vh;
     direction: rtl;
     overflow: hidden;
-    background-image:
-        linear-gradient(var(--primary-color-shadow) 1px, transparent 1px),
-        linear-gradient(90deg, var(--primary-color-shadow) 1px, transparent 1px);
-    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-image: linear-gradient(rgba(13, 12, 29, 0.7), rgba(13, 12, 29, 0.7)), url('https://image2url.com/images/1758059813445-2c50be00-b9e7-491d-bec7-bcf345485f1a.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .hidden {
