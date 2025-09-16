@@ -124,7 +124,7 @@ const CinemaApp = {
                     <div class="channel-icon">
                         <i class="fas fa-futbol"></i>
                     </div>
-                    <div class="channel-name">${channel.name} <span class="live-badge">live</span></div>
+                    <div class="channel-name">${channel.name} <span class="live-badge">LIVE</span></div>
                 </div>`;
             this.elements.channelGrid.innerHTML += gridItem;
 
@@ -138,7 +138,7 @@ const CinemaApp = {
                         <i class="fas fa-futbol"></i>
                     </div>
                     <div class="channel-row-info">
-                        <div class="channel-row-name">${channel.name} <span class="live-badge">live</span></div>
+                        <div class="channel-row-name">${channel.name} <span class="live-badge">LIVE</span></div>
                         <div class="channel-row-event">${channel.event}</div>
                     </div>
                 </div>`;
