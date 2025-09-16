@@ -1,19 +1,19 @@
  [
     {
         "id": "bein1",
-        "name": "بیین سپۆرت 1",
+        "name": "beIN Sports 1",
         "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-1/",
-        "event": "یاریئت تەپاپئ"
+        "event": "Live Match"
     },
     {
         "id": "bein2",
-        "name": "بیین سپۆرت 2",
+        "name": "beIN Sports 2",
         "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-2/",
-        "event": "یاریئت تەپاپئ"
+        "event": "Live Match"
     },
     {
         "id": "bein3",
-        "name": "بیین سپۆرت 3",
+        "name": "beIN Sports 3",
         "src": "https://bvggj.yallashootlivetv.com/albaplayer/sports-3/",
         "event": ""
     }

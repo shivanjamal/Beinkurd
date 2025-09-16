@@ -268,16 +268,16 @@ const CinemaApp = {
 
         // Animate loading text
         setTimeout(() => {
-            this.elements.lobbyLoaderText.textContent = '...بارکردنی پێکهاتەکان';
+            this.elements.lobbyLoaderText.textContent = '...Loading components';
         }, 1500);
 
         setTimeout(() => {
-            this.elements.lobbyLoaderText.textContent = '...پەیوەستبوون';
+            this.elements.lobbyLoaderText.textContent = '...Connecting';
         }, 2500);
 
         setTimeout(() => {
             // Enable clicks after the loading animation is complete
-            this.elements.lobbyLoaderText.textContent = 'ئامادەیە';
+            this.elements.lobbyLoaderText.textContent = 'Ready';
             this.elements.lobbyChannelList.style.pointerEvents = 'auto';
         }, 3500); // Corresponds to the fillLoader animation duration + delay
     },
@@ -338,15 +338,15 @@ const CinemaApp = {
 
         if (this.state.favorites.includes(channelId)) {
             // Ask for confirmation before removing (only if it's not from the context menu)
-            if (confirm('ئایا دڵنیایت لە سڕینەوەی ئەم کەناڵە لە دڵخوازەکانت؟')) {
+            if (confirm('Are you sure you want to remove this channel from your favorites?')) {
                 // Remove from favorites
                 this.state.favorites = this.state.favorites.filter(id => id !== channelId);
-                this.showNotification(`'${channelElement.querySelector('.channel-name, .channel-row-name').textContent.trim()}' لابرا لە دڵخوازەکان`, 'warning');
+                this.showNotification(`'${channelElement.querySelector('.channel-name, .channel-row-name').textContent.trim()}' removed from favorites`, 'warning');
             } else { return; } // Stop if user cancels
         } else {
             // Add to favorites
             this.state.favorites.push(channelId);
-            this.showNotification(`'${channelElement.querySelector('.channel-name, .channel-row-name').textContent.trim()}' زیادکرا بۆ دڵخوازەکان`);
+            this.showNotification(`'${channelElement.querySelector('.channel-name, .channel-row-name').textContent.trim()}' added to favorites`);
         }
 
         // Save to localStorage
@@ -371,9 +371,9 @@ const CinemaApp = {
         // Update menu text based on favorite status
         const isFavorited = targetChannel.classList.contains('favorited');
         const favoriteAction = this.elements.contextMenu.querySelector('[data-action="favorite"]');
-        favoriteAction.innerHTML = isFavorited
-            ? '<i class="fas fa-star-half-alt"></i> لابردن لە دڵخوازەکان'
-            : '<i class="fas fa-star"></i> زیادکردن بۆ دڵخوازەکان';
+        favoriteAction.innerHTML = isFavorited ?
+            '<i class="fas fa-star-half-alt"></i> Unfavorite' :
+            '<i class="fas fa-star"></i> Favorite';
 
         this.elements.contextMenu.classList.remove('hidden');
     },
@@ -396,10 +396,10 @@ const CinemaApp = {
                 const channelId = channel.dataset.channel;
                 if (this.state.favorites.includes(channelId)) {
                     this.state.favorites = this.state.favorites.filter(id => id !== channelId);
-                    this.showNotification(`'${channel.querySelector('.channel-name, .channel-row-name').textContent.trim()}' لابرا لە دڵخوازەکان`, 'warning');
+                    this.showNotification(`'${channel.querySelector('.channel-name, .channel-row-name').textContent.trim()}' removed from favorites`, 'warning');
                 } else {
                     this.state.favorites.push(channelId);
-                    this.showNotification(`'${channel.querySelector('.channel-name, .channel-row-name').textContent.trim()}' زیادکرا بۆ دڵخوازەکان`);
+                    this.showNotification(`'${channel.querySelector('.channel-name, .channel-row-name').textContent.trim()}' added to favorites`);
                 }
                 localStorage.setItem('favoriteChannels', JSON.stringify(this.state.favorites));
                 this.updateFavoriteIcons();
@@ -409,7 +409,7 @@ const CinemaApp = {
                 const streamSrc = channel.dataset.src;
                 if (streamSrc) {
                     navigator.clipboard.writeText(streamSrc).then(() => {
-                        this.showNotification('بەستەری ستریم کۆپی کرا', 'success');
+                        this.showNotification('Stream link copied to clipboard', 'success');
                     }).catch(err => console.error('Failed to copy stream link: ', err));
                 }
                 break;
@@ -482,10 +482,10 @@ const CinemaApp = {
     copyCurrentStreamLink() {
         if (this.state.currentStreamSrc) {
             navigator.clipboard.writeText(this.state.currentStreamSrc).then(() => {
-                this.showNotification('بەستەری ستریمی ئێستا کۆپی کرا', 'success');
+                this.showNotification('Current stream link copied', 'success');
             }).catch(err => console.error('Failed to copy stream link: ', err));
         } else {
-            this.showNotification('هیچ ستریمێک کار ناکات بۆ کۆپیکردن', 'warning');
+            this.showNotification('No stream is currently playing', 'warning');
         }
     },
 
@@ -494,7 +494,7 @@ const CinemaApp = {
         this.elements.appLinkInput.setSelectionRange(0, 99999); // For mobile devices
         try {
             navigator.clipboard.writeText(this.elements.appLinkInput.value);
-            this.showNotification('بەستەر کۆپی کرا!', 'success');
+            this.showNotification('App link copied to clipboard!', 'success');
         } catch (err) {
             console.error('Failed to copy text: ', err);
         }
@@ -578,7 +578,7 @@ const CinemaApp = {
         const eventInfo = eventSelector ? element.querySelector(eventSelector)?.textContent : null;
 
         this.elements.screenLabel.querySelector('span').textContent = channelName;
-        this.elements.currentChannelInfo.innerHTML = `<span class="live-indicator">ڕاستەوخۆ</span> ${channelName}`;
+        this.elements.currentChannelInfo.innerHTML = `<span class="live-indicator">LIVE</span> ${channelName}`;
 
         if (eventInfo) {
             this.elements.matchInfo.textContent = eventInfo;
@@ -741,7 +741,7 @@ const CinemaApp = {
     togglePiP() {
         // Picture-in-Picture for iframes is complex and often blocked.
         // This remains a placeholder.
-        alert('شێوازی پیکچەر-ئین-پیکچەر چالاک/ناچالاک کراو');
+        alert('Picture-in-Picture mode toggled.');
     },
 
     toggleTheaterView() {
@@ -753,12 +753,14 @@ const CinemaApp = {
     },
 
     clearAllFavorites() {
-        if (confirm('ئایا دڵنیایت لە سڕینەوەی هەموو دڵخوازەکانت؟ ئەم کارە ناتوانرێت بگەڕێنرێتەوە.')) {
+        if (confirm('Are you sure you want to clear all favorites? This action cannot be undone.')) {
             this.state.favorites = [];
             localStorage.removeItem('favoriteChannels');
             this.updateFavoriteIcons();
-            this.handleSearch({ target: this.elements.channelSearch }); // Re-apply filter
-            this.showNotification('هەموو دڵخوازەکان سڕدرانەوە', 'warning');
+            this.handleSearch({
+                target: this.elements.channelSearch
+            }); // Re-apply filter
+            this.showNotification('All favorites have been cleared', 'warning');
         }
     }
 };
