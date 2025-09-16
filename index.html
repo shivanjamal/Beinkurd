@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تەلەڤیزیۆنی تۆپی پێ - شاشەی سینەما</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            direction: rtl;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(29, 28, 33, 0.7) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(40, 15, 15, 0.6) 0%, transparent 40%);
+        }
+        
+        .cinema-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cinema-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,0,0,0.1), rgba(0,0,255,0.1));
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .theater-header {
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, #1a1a1a, #0a0a0a);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #2a2a2a;
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        .theater-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #ffb347;
+            text-shadow: 0 0 8px rgba(255, 179, 71, 0.5);
+        }
+        
+        .theater-title i {
+            margin-left: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .theater-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .theater-btn {
+            background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+            border: 1px solid #3a3a3a;
+            color: #ffb347;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .theater-btn:hover {
+            background: linear-gradient(to bottom, #ff6b6b, #c44d4d);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 107, 107, 0.4);
+            color: white;
+        }
+        
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .main-screen {
+            flex: 3;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9);
+        }
+        
+        .screen-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 2;
+        }
+        
+        .screen-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            border: 1px solid #ffb347;
+            box-shadow: 0 0 10px rgba(255, 179, 71, 0.3);
+        }
+        
+        .screen-label i {
+            margin-left: 8px;
+            color: #ffb347;
+        }
+        
+        .player-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .channel-sidebar {
+            flex: 1;
+            background: linear-gradient(to left, #1a1a1a, #0c0c0c);
+            padding: 15px;
+            overflow-y: auto;
+            border-left: 1px solid #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .sidebar-title {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ffb347;
+            color: #ffb347;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 5px rgba(255, 179, 71, 0.4);
+        }
+        
+        .sidebar-title i {
+            margin-left: 10px;
+        }
+        
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .channel-item {
+            background: linear-gradient(to bottom, #252525, #1a1a1a);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .channel-item:hover {
+            background: linear-gradient(to bottom, #353535, #252525);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .channel-item.active {
+            border-color: #ff6b6b;
+            background: linear-gradient(to bottom, #422, #311);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .channel-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #333, #222);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            border: 1px solid #444;
+        }
+        
+        .channel-icon i {
+            color: #ffb347;
+            font-size: 18px;
+        }
+        
+        .channel-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #ffb347;
+        }
+        
+        .live-badge {
+            background: linear-gradient(to right, #e55039, #c23616);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 5px rgba(229, 80, 57, 0.6);
+        }
+        
+        .channel-list {
+            margin-top: 20px;
+            overflow-y: auto;
+        }
+        
+        .list-title {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #ffb347;
+            display: flex;
+            align-items: center;
+            text-shadow: 0 0 5px rgba(255, 179, 71, 0.4);
+        }
+        
+        .list-title i {
+            margin-left: 8px;
+        }
+        
+        .channel-row {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #252525, #1a1a1a);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .channel-row:hover {
+            background: linear-gradient(to right, #353535, #252525);
+            transform: translateX(-5px);
+        }
+        
+        .channel-row.active {
+            background: linear-gradient(to right, #422, #311);
+            border-left: 3px solid #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .channel-row-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #333, #222);
+            border-radius: 50%;
+            margin-left: 12px;
+            border: 1px solid #444;
+        }
+        
+        .channel-row-icon i {
+            color: #ffb347;
+            font-size: 14px;
+        }
+        
+        .channel-row-info {
+            flex: 1;
+        }
+        
+        .channel-row-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+            color: #ffb347;
+        }
+        
+        .channel-row-event {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .theater-footer {
+            padding: 15px 20px;
+            background: linear-gradient(to top, #1a1a1a, #0a0a0a);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #2a2a2a;
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .now-playing {
+            display: flex;
+            align-items: center;
+        }
+        
+        .now-playing-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #333, #222);
+            border-radius: 50%;
+            margin-left: 15px;
+            border: 1px solid #444;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .now-playing-icon i {
+            color: #ffb347;
+            font-size: 18px;
+        }
+        
+        .now-playing-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .current-channel {
+            font-weight: 600;
+            color: #ffb347;
+            text-shadow: 0 0 5px rgba(255, 179, 71, 0.4);
+        }
+        
+        .match-info {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+        
+        .live-indicator {
+            background: linear-gradient(to right, #e55039, #c23616);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+            box-shadow: 0 0 5px rgba(229, 80, 57, 0.6);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .theater-seats {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to top, #000000, transparent);
+            opacity: 0.7;
+            z-index: 5;
+        }
+        
+        .seat-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .seat {
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px 5px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .seat::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, rgba(255, 255, 255, 0.2) 100%);
+        }
+        
+        .seat:nth-child(2n) {
+            background: rgba(255, 107, 107, 0.3);
+        }
+        
+        /* Cinema light effect */
+        .cinema-lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .light-beam {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 179, 71, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: moveBeam 20s infinite linear;
+        }
+        
+        .light-beam:nth-child(1) {
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+            animation-duration: 25s;
+        }
+        
+        .light-beam:nth-child(2) {
+            top: 50%;
+            right: -150px;
+            animation-delay: -5s;
+            animation-duration: 20s;
+        }
+        
+        .light-beam:nth-child(3) {
+            bottom: -150px;
+            left: 30%;
+            animation-delay: -10s;
+            animation-duration: 15s;
+        }
+        
+        @keyframes moveBeam {
+            0% {
+                transform: translate(0, 0);
+            }
+            25% {
+                transform: translate(100px, 50px);
+            }
+            50% {
+                transform: translate(50px, 100px);
+            }
+            75% {
+                transform: translate(-50px, 150px);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        /* وەشانەکان بۆ ئامێری مۆبایل */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .channel-sidebar {
+                border-left: none;
+                border-top: 1px solid #333;
+                max-height: 30vh;
+            }
+            
+            .channel-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .channel-item {
+                padding: 8px 5px;
+            }
+            
+            .channel-name {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cinema-container">
+        <div class="cinema-lights">
+            <div class="light-beam"></div>
+            <div class="light-beam"></div>
+            <div class="light-beam"></div>
+        </div>
+        
+        <div class="theater-header">
+            <div class="theater-title">
+                <i class="fas fa-futbol"></i>
+                <span>یاریئت راستەوخو یئت تەپا پئ</span>
+            </div>
+            <div class="theater-controls">
+                <button class="theater-btn" onclick="toggleMute()">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <button class="theater-btn" onclick="toggleFullscreen()">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="main-screen">
+                <div class="screen-content">
+                    <div class="screen-label">
+                        <i class="fas fa-tv"></i>
+                        <span>بیین سپۆرت 1</span>
+                    </div>
+                    
+                    <div class="player-container">
+                        <div class="iframe-container">
+                            <iframe allowfullscreen="true" frameborder="0" scrolling="no" src="https://bvggj.yallashootlivetv.com/albaplayer/sports-1/"></iframe>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="theater-seats">
+                    <div class="seat-row">
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                        <div class="seat"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="channel-sidebar">
+                <div class="sidebar-title">
+                    <i class="fas fa-tv"></i>
+                    <span>کەنالئت راستەوخو</span>
+                </div>
+                
+                <div class="channel-grid">
+                    <div class="channel-item active" data-channel="bein1" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-1/">
+                        <div class="channel-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-name">بیین 1 <span class="live-badge">ڕاستەوخۆ</span></div>
+                    </div>
+                    
+                    <div class="channel-item" data-channel="bein2" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-2/">
+                        <div class="channel-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-name">بیین 2 <span class="live-badge">ڕاستەوخۆ</span></div>
+                    </div>
+                    
+                    <div class="channel-item" data-channel="bein3" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-3/">
+                        <div class="channel-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-name">بیین 3 <span class="live-badge">ڕاستەوخۆ</span></div>
+                    </div>
+                    
+                    <div class="channel-item" data-channel="ads" data-src="">
+                        <div class="channel-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-name">ئەدسپۆرت <span class="live-badge">ڕاستەوخۆ</span></div>
+                    </div>
+                </div>
+                
+                <div class="channel-list">
+                    <div class="list-title">
+                        <i class="fas fa-list"></i>
+                        <span>هەمی کەنال</span>
+                    </div>
+                    
+                    <div class="channel-row active" data-channel="bein1" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-1/">
+                        <div class="channel-row-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-row-info">
+                            <div class="channel-row-name">بیین سپۆرت 1 <span class="live-badge">ڕاستەوخۆ</span></div>
+                            <div class="channel-row-event">یاریئت تەپاپئ </div>
+                        </div>
+                    </div>
+                    
+                    <div class="channel-row" data-channel="bein2" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-2/">
+                        <div class="channel-row-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-row-info">
+                            <div class="channel-row-name">بیین سپۆرت 2 <span class="live-badge">ڕاستەوخۆ</span></div>
+                            <div class="channel-row-event">یاریئت تەپاپئ </div>
+                        </div>
+                    </div>
+                    
+                    <div class="channel-row" data-channel="bein3" data-src="https://bvggj.yallashootlivetv.com/albaplayer/sports-3/">
+                        <div class="channel-row-icon">
+                            <i class="fas fa-futbol">یاریئت تەپاپئ </i>
+                        </div>
+                        <div class="channel-row-info">
+                            <div class="channel-row-name">بیین سپۆرت 3 <span class="live-badge">ڕاستەوخۆ</span></div>
+                            <div class="channel-row-event"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="channel-row" data-channel="ads" data-src="">
+                        <div class="channel-row-icon">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <div class="channel-row-info">
+                            <div class="channel-row-name">کەناڵی ئەدسپۆرت</div>
+                            <div class="channel-row-event"> یاریئت تەپاپئ </div>
+                        </div>
+                    </div>
+                    
+                    <div class="channel-row" data-channel="euro" data-src="">
+                        <div class="channel-row-icon">
+                            <i class="fas fa-basketball-ball"></i>
+                        </div>
+                        <div class="channel-row-info">
+                            <div class="channel-row-name">یۆرۆسپۆرت</div>
+                            <div class="channel-row-event">خولی  - یاریئت ئەفرو</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="theater-footer">
+            <div class="now-playing">
+                <div class="now-playing-icon">
+                    <i class="fas fa-futbol"></i>
+                </div>
+                <div class="now-playing-info">
+                    <div class="current-channel">
+                        <span class="live-indicator">ڕاستەوخۆ</span>
+                        بیین سپۆرت 1
+                    </div>
+                    <div class="match-info">یاریئت راستەوخو</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="theater-btn" onclick="togglePiP()">
+                    <i class="fas fa-map"></i>
+                </button>
+                <button class="theater-btn" onclick="toggleTheaterView()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const iframe = document.querySelector('iframe');
+            let isMuted = false;
+            
+            // Channel switching for grid items
+            const channelItems = document.querySelectorAll('.channel-item');
+            channelItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const channelSrc = this.getAttribute('data-src');
+                    const channelName = this.querySelector('.channel-name').textContent;
+                    
+                    if (channelSrc) {
+                        // Remove active class from all items
+                        channelItems.forEach(i => i.classList.remove('active'));
+                        // Add active class to clicked item
+                        this.classList.add('active');
+                        
+                        // Update iframe source
+                        iframe.src = channelSrc;
+                        
+                        // Update UI
+                        updateChannelInfo(this);
+                    }
+                });
+            });
+            
+            // Channel switching for list items
+            const channelRows = document.querySelectorAll('.channel-row');
+            channelRows.forEach(row => {
+                row.addEventListener('click', function() {
+                    const channelSrc = this.getAttribute('data-src');
+                    const channelName = this.querySelector('.channel-row-name').textContent;
+                    
+                    if (channelSrc) {
+                        // Remove active class from all rows
+                        channelRows.forEach(r => r.classList.remove('active'));
+                        // Remove active class from all grid items
+                        channelItems.forEach(i => i.classList.remove('active'));
+                        // Add active class to clicked row
+                        this.classList.add('active');
+                        
+                        // Find corresponding grid item and activate it
+                        const channelId = this.getAttribute('data-channel');
+                        const correspondingItem = document.querySelector(`.channel-item[data-channel="${channelId}"]`);
+                        if (correspondingItem) {
+                            correspondingItem.classList.add('active');
+                        }
+                        
+                        // Update iframe source
+                        iframe.src = channelSrc;
+                        
+                        // Update UI
+                        updateChannelInfo(this, true);
+                    }
+                });
+            });
+            
+            // Show/hide controls on mouse move
+            let mouseTimer;
+            document.addEventListener('mousemove', function() {
+                document.querySelector('.theater-header').style.opacity = '1';
+                document.querySelector('.theater-footer').style.opacity = '1';
+                document.querySelector('.screen-label').style.opacity = '1';
+                
+                clearTimeout(mouseTimer);
+                mouseTimer = setTimeout(function() {
+                    document.querySelector('.theater-header').style.opacity = '0';
+                    document.querySelector('.theater-footer').style.opacity = '0';
+                    document.querySelector('.screen-label').style.opacity = '0';
+                }, 3000);
+            });
+            
+            // Function to update channel info
+            function updateChannelInfo(element, isRow = false) {
+                let channelName, eventInfo;
+                
+                if (isRow) {
+                    channelName = element.querySelector('.channel-row-name').textContent;
+                    eventInfo = element.querySelector('.channel-row-event').textContent;
+                } else {
+                    channelName = element.querySelector('.channel-name').textContent;
+                    // For grid items, we don't have event info, so we'll keep the existing one
+                    eventInfo = document.querySelector('.match-info').textContent;
+                }
+                
+                document.querySelector('.current-channel').innerHTML = '<span class="live-indicator">ڕاستەوخۆ</span> ' + channelName;
+                document.querySelector('.screen-label span').textContent = channelName;
+                
+                if (eventInfo) {
+                    document.querySelector('.match-info').textContent = eventInfo;
+                }
+            }
+        });
+        
+        function toggleTheaterView() {
+            // Return to normal view (this would normally change the view)
+            alert('گەڕانەوە بۆ شاشەی ئاسایی');
+        }
+        
+        function toggleMute() {
+            const btnIcon = document.querySelector('.theater-btn .fa-volume-up');
+            isMuted = !isMuted;
+            
+            if (isMuted) {
+                btnIcon.classList.remove('fa-volume-up');
+                btnIcon.classList.add('fa-volume-mute');
+            } else {
+                btnIcon.classList.remove('fa-volume-mute');
+                btnIcon.classList.add('fa-volume-up');
+            }
+        }
+        
+        function togglePiP() {
+            // Picture in Picture functionality
+            alert('شێوازی پیکچەر-ئین-پیکچەر چالاک/ناچالاک کراو');
+        }
+        
+        function toggleFullscreen() {
+            const elem = document.querySelector('.cinema-container');
+            
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
