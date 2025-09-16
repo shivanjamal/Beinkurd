@@ -118,7 +118,7 @@ const CinemaApp = {
             // Render for Sidebar Grid
             const gridItem = `
                 <div class="channel-item" data-channel="${channel.id}" data-src="${channel.src}">
-                    <button class="favorite-btn" data-tooltip="زیادکردن بۆ دڵخوازەکان">
+                    <button class="favorite-btn">
                         <i class="far fa-star"></i>
                     </button>
                     <div class="channel-icon">
@@ -131,7 +131,7 @@ const CinemaApp = {
             // Render for Sidebar List
             const listItem = `
                 <div class="channel-row" data-channel="${channel.id}" data-src="${channel.src}">
-                    <button class="favorite-btn" data-tooltip="زیادکردن بۆ دڵخوازەکان">
+                    <button class="favorite-btn">
                         <i class="far fa-star"></i>
                     </button>
                     <div class="channel-row-icon">
